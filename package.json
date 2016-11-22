@@ -1,0 +1,29 @@
+{
+  "name": "git-stats-fcc-importer",
+  "version": "1.0.0",
+  "description": "git-stats importer for FreeCodeCamp users",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "git-stats": "^2.10.0",
+    "request": "^2.79.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmal/git-stats-fcc-importer.git"
+  },
+  "keywords": [
+    "git",
+    "stats",
+    "FreeCodeCamp",
+    "cli"
+  ],
+  "author": "Yu Zhao <zyzy5730@hotmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cmal/git-stats-fcc-importer/issues"
+  },
+  "homepage": "https://github.com/cmal/git-stats-fcc-importer#readme"
+}
