@@ -1,6 +1,6 @@
 {
   "name": "git-stats-fcc-importer",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "git-stats importer for FreeCodeCamp users",
   "main": "index.js",
   "scripts": {
