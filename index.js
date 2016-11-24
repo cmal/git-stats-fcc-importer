@@ -38,8 +38,8 @@ function makeRecord(data) {
 
 gs.get(function(err, stats) {
   var finalData = stats;
-  // var url = 'https://www.freecodecamp.com/api/users/stats?username='+ _username;
-  var url = 'http://localhost:3000/api/users/stats?username=fcccc4f8191';
+  var url = 'https://www.freecodecamp.com/api/users/stats?username='+ _username;
+  // var url = 'http://localhost:3000/api/users/stats?username=fcccc4f8191';
   request.get(url)
     .on('error', function(err) {
       console.log('Error ocurred when trying to request ' + url);
