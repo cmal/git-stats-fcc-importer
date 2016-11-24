@@ -1,49 +1,53 @@
 'use strict';
 
 // Dependencies
-var GitStats = require("git-stats");
-var request = require("request");
+var GitStats = require('git-stats');
+var request = require('request');
+var shasum = require('shasum');
 
-var _username = process.argv[2];
+var _username = process.argv[2] || '';
 
 // Create the GitStats instance
 var gs = new GitStats();
 
-// var inputData = {
-//   stats: {
-//     username: "fcccc4f8191",
-//     stats: [{
-//       date: 1479552008474,
-//       hash: "6dedf981ecab9ce1b3f997508dcb796f90838328"
-//     }, {
-//       date: 1479619115285,
-//       hash: "051284a491a053ba29896deaf7a49f17ade241c1"
-//     }, {
-//       date: 1479619250135,
-//       hash: "3aa47ee34e5bab839c88bfb411f1946e84253fea"
-//     }]
-//   }
-// };
-
+// input: {stats: username: string, stats: [{date: int, files: string}, ...]}
+// output: [{date: int, url: '', hash: shasun_string}, ...]
+function makeRecord(data) {
+  var obj = [];
+  if (!data.hasOwnProperty('stats')) {
+    console.log('Error occured when trying to access FreeCodeCamp\'s API...');
+  } else if (data.hasOwnProperty('error')) {
+    console.log(data.error.message);
+  } else if (!data.stats.hasOwnProperty('challengeMap')) {
+    console.log('No challengeMap field returned from FreeCodeCamp\'s API.')
+  } else {
+    console.log('Got api data..');
+    var cm = data.stats.challengeMap;
+    Object.keys(cm).map(function(key) {
+      if (cm[key].hasOwnProperty('completedDate') &&
+          cm[key].hasOwnProperty('files')) {
+        obj.push({
+          date: cm[key].completedDate,
+          hash: shasum(cm[key].files)
+        });
+      }
+    });
+  }
+  return obj;
+}
 
 gs.get(function(err, stats) {
   var finalData = stats;
-  var url = 'https://www.freecodecamp.com/api/users/stats?username='+ _username;
+  // var url = 'https://www.freecodecamp.com/api/users/stats?username='+ _username;
+  var url = 'http://localhost:3000/api/users/stats?username=fcccc4f8191';
   request.get(url)
     .on('error', function(err) {
       console.log('Error ocurred when trying to request ' + url);
       console.log(err);
     })
     .on('data', function(resp) {
-      var data = JSON.parse(resp);
-      if (!data.hasOwnProperty('stats')) {
-        console.log("Error occured when trying to access FreeCodeCamp's API...");
-        if (data.hasOwnProperty('error')) {
-          console.log(data.error.message);
-        }
-        return;
-      }
-      data.stats.stats.forEach(function(item) {
+      var data = makeRecord(JSON.parse(resp));
+      data.forEach(function(item) {
         gs.record({
           date: new Date(item.date),
           save: false,
@@ -54,5 +58,6 @@ gs.get(function(err, stats) {
         });
       });
       gs.save(finalData);
+      console.log('Done!');
     });
 });
